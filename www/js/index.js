@@ -137,7 +137,7 @@ var app = {
             });
     },
     startReading: function(deviceHandle) {
-        $('body').append('connected');
+       // $('body').append('connected');
          app.write(
             'writeDescriptor',
             deviceHandle,

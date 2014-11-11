@@ -58,7 +58,9 @@ var app = {
         connectBtn.hide();
         disconnectBtn.show();
     },
-    appDisconnnect: function() {
+    appDisconnect: function() {
+        evothings.ble.close(app.deviceHandle);
+        app.deviceHandle = null;
         disconnectBtn.hide();
         connectBtn.show();
     },
@@ -79,13 +81,13 @@ var app = {
        evothings.ble.startScan(
             function(deviceInfo)
             {
-                if (app.knownDevices[deviceInfo.address])
+               /* if (app.knownDevices[deviceInfo.address])
                 {
                     return;
                 }
-
+*/
                 console.log('found device: ' + deviceInfo.name);
-                app.knownDevices[deviceInfo.address] = deviceInfo;
+               // app.knownDevices[deviceInfo.address] = deviceInfo;
                 if (deviceInfo.name == 'nRF5x' && !app.connectee)
                 {
                     console.log('Found nRF5x');

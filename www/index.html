@@ -1,0 +1,43 @@
+ <!doctype html>
+<html>
+    <head>
+        <title>Rapiro Controller</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile-1.4.2.css">
+        <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile.theme-1.4.2.css">
+    </head>
+    <body>
+        <div data-role="page">
+     
+            <div data-role="header">
+                  <a id="connectButton" href="#" onclick="app.appConnect()">Connect</a>
+                  <a id="disconnectButton" href="#" onclick="app.appDisConnect()" style="display:none">Disconnect</a>
+                <h1>Rapiro Controller</h1>
+            </div><!-- /header -->
+     
+            <div data-role="content">
+                <ul data-role="listview">
+                    <li><a href="#" onclick="app.command(0)">Initial Position</a></li>
+                    <li><a href="#" onclick="app.command(1)">Move Forward</a></li>
+                    <li><a href="#" onclick="app.command(2)">Move Backward</a></li>
+                    <li><a href="#" onclick="app.command(3)">Turn Left</a></li>
+                    <li><a href="#" onclick="app.command(4)">Turn Right</a></li>
+                    <li><a href="#" onclick="app.command(5)">Give Me a Hug</a></li>
+                    <li><a href="#" onclick="app.command(6)">Wave Right Hand</a></li>
+                    <li><a href="#" onclick="app.command(7)">Move Both Arms</a></li>
+                    <li><a href="#" onclick="app.command(8)">Wave Left Hand</a></li>
+                    <li><a href="#" onclick="app.command(9)">Catch Action</a></li>
+                </ul>
+            </div><!-- /content -->
+     
+     
+        </div><!-- /page -->
+
+
+        <script type="text/javascript" src="app/components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="app/components/jquery-mobile-bower/js/jquery.mobile-1.4.2.min.js"></script>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>

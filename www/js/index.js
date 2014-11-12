@@ -88,9 +88,9 @@ var app = {
 */
                 console.log('found device: ' + deviceInfo.name);
                // app.knownDevices[deviceInfo.address] = deviceInfo;
-                if (deviceInfo.name == 'nRF5x' && !app.connectee)
+                if (deviceInfo.name == 'nRF51822_Serial' && !app.connectee)
                 {
-                    console.log('Found nRF5x');
+                    console.log('Found nRF51822_Serial');
                     connectee = deviceInfo;
                     app.connect(deviceInfo.address);
                 }

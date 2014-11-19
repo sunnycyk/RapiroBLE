@@ -2,9 +2,61 @@
 <html>
     <head>
         <title>Rapiro Controller</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1,
+            user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile-1.4.2.css">
         <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile.theme-1.4.2.css">
+        <style>
+
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: rgba(0,0,0,0);
+            }
+
+            #directionControls {
+                box-sizing: border-box;
+
+                float: left;
+
+                padding: 1em;
+
+                font-size: 5vmin;
+                text-align: center;
+            }
+
+            #directionControls button {
+                display: inline-block;
+                width: auto;
+                margin: 0;
+            }
+
+            #directionControls button, #gestureControls button {
+                -moz-box-shadow: none;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+            }
+
+            #gestureControls {
+                box-sizing: border-box;
+
+                float: right;
+
+                padding: 1em;
+
+                text-align: right;
+            }
+
+            @media screen and (orientation: portrait) {
+                #directionControls, #gestureControls { width: 100%; }
+                #gestureControls { text-align: center; }
+                #gestureControls button { display: block; }
+            }
+        </style>
     </head>
     <body>
         <div data-role="page" id="control">
@@ -15,21 +67,33 @@
                 <h1>Rapiro</h1>
             </div><!-- /header -->
      
-            <div data-role="content">
-                <ul data-role="listview">
-                    <li><a href="#" onclick="app.command(0)">Initial Position</a></li>
-                    <li><a href="#" onclick="app.command(1)">Move Forward</a></li>
-                    <li><a href="#" onclick="app.command(2)">Move Backward</a></li>
-                    <li><a href="#" onclick="app.command(3)">Turn Left</a></li>
-                    <li><a href="#" onclick="app.command(4)">Turn Right</a></li>
-                    <li><a href="#" onclick="app.command(5)">Give Me a Hug</a></li>
-                    <li><a href="#" onclick="app.command(6)">Wave Right Hand</a></li>
-                    <li><a href="#" onclick="app.command(7)">Move Both Arms</a></li>
-                    <li><a href="#" onclick="app.command(8)">Wave Left Hand</a></li>
-                    <li><a href="#" onclick="app.command(9)">Catch Action</a></li>
-                </ul>
-            </div><!-- /content -->
-     
+            <div id="directionControls">
+
+                <button onclick="app.command(1)">&#9650;</button><br /><br /><!-- forward -->
+                
+                <button onclick="app.command(3)">&#9664;</button><!-- left -->
+
+                <button onclick="app.command(0)" style="margin:0 1em;">&nbsp;&#8226;&nbsp;</button>
+                
+                <button onclick="app.command(4)">&#9654;</button><br /><br /><!-- right -->
+                
+                <button onclick="app.command(2)">&#9660;</button><!-- backward -->
+
+            </div>
+
+            <div id="gestureControls">
+
+                <button onclick="app.command(5)">Give Me a Hug</button>
+
+                <button onclick="app.command(6)">Wave Right Hand</button>
+
+                <button onclick="app.command(7)">Move Both Arms</button>
+
+                <button onclick="app.command(8)">Wave Left Hand</button>
+
+                <button onclick="app.command(9)">Catch Action</button>
+
+            </div>
      
         </div><!-- /page -->
 

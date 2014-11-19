@@ -1,4 +1,7 @@
 /*
+ * Sunny Cheung
+ * http://sunnycyk.com 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,200 +19,138 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var ble = null;
+
+// UI instance
 var connectBtn = null;
 var disconnectBtn = null;
-var app = { 
+var deviceList = null;
 
-    knownDevices: {},
-    connectee: null,
-    deviceHandle: null,
-    characteristicRead: null,
-    characteristicWrite: null,
-    descriptorNotification: null,
+// Start the app when device is ready
+document.addEventListener('deviceready', function() { app.initialize(); }, false);
 
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+var app = {};
 
-        // Important reset BLE when page reloads/closes!
-        window.hyper && window.hyper.onReload(function()
-        {
-            evothings.ble.stopScan();
-            if (app.deviceHandle)
-            {
-                evothings.ble.close(app.deviceHandle);
-            }
-        });
-    },
-    command: function(input) {
-        app.write('writeCharacteristic', app.deviceHandle, app.characteristicWrite, new Uint8Array([0x23, 0x4d, 0x30 + input]));
-    
-    },
-    appConnect: function() {
-        app.startScan();
-        connectBtn.hide();
-        disconnectBtn.show();
-    },
-    appDisconnect: function() {
-        evothings.ble.close(app.deviceHandle);
-        app.deviceHandle = null;
-        disconnectBtn.hide();
-        connectBtn.show();
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-       //app.receivedEvent('deviceready');
-       ble = evothings.ble;
-       connectBtn = $('a#connectButton');
-       disconnectBtn = $('a#disconnectButton');
-    },
-    // Update DOM on a Received Event
-    startScan: function() {
-        
-        console.log('Scanning...');
-       evothings.ble.startScan(
-            function(deviceInfo)
-            {
-               /* if (app.knownDevices[deviceInfo.address])
-                {
-                    return;
-                }
-*/
-                console.log('found device: ' + deviceInfo.name);
-               // app.knownDevices[deviceInfo.address] = deviceInfo;
-                if (deviceInfo.name == 'nRF51822_Serial' && !app.connectee)
-                {
-                    console.log('Found nRF51822_Serial');
-                    connectee = deviceInfo;
-                    app.connect(deviceInfo.address);
-                }
-            },
-            function(errorCode)
-            {
-                console.log('startScan error: ' + errorCode);
-            });
-    },
-    write: function(writeFunc, deviceHandle, handle, value) {
-        if (handle) {
-            ble[writeFunc](
-                deviceHandle,
-                handle,
-                value,
+// Define Service and Charateristic UUID
+app.RBL_SERVICE_UUID = '713d0000-503e-4c75-ba94-3148f18d941e';
+app.RBL_CHAR_TX_UUID = '713d0002-503e-4c75-ba94-3148f18d941e';
+app.RBL_CHAR_RX_UUID = '713d0003-503e-4c75-ba94-3148f18d941e';
+app.RBL_TX_UUID_DESCRIPTOR = '00002902-0000-1000-8000-00805f9b34fb';
+
+
+app.initialize = function() {
+    app.connected = false;
+
+    connectBtn = $('a#connectButton');
+    disconnectBtn = $('a#disconnectButton');
+    deviceList = $('ul#bleList');
+  
+};
+
+// look for BLE device
+app.startScan = function() {
+    app.disconnect();
+    console.log('Scanning');
+    app.devices = {};
+
+    easyble.startScan(function(device) {
+        app.devices[device.address] = device;
+        deviceList.append('<li><a href="#" onclick="app.connect(\'' + device.address + '\')">' + 
+                            device.name + '</a></li>').listview('refresh');
+    }, function(errorCode) {
+        navigator.notification.alert('Error: ' + errorCode, function() {});
+        console.log('Error ' + errorCode);
+    });
+};
+
+// Connect to the selected BLE device
+app.connect = function(address) {
+    var device = app.devices[address];
+    // stop scan;
+    easyble.stopScan();
+    $.mobile.loading('show', {});
+    device.connect(function(device) { // success
+            
+        device.readServices([app.RBL_SERVICE_UUID], function(device) {
+            app.connected = true;
+            app.device = device;
+
+            console.log('Connected to ' + device.name);
+
+            device.writeDescriptor(
+                app.RBL_CHAR_TX_UUID,
+                app.RBL_TX_UUID_DESCRIPTOR,
+                new Uint8Array([1,0]),
                 function() {
-                   console.log('success'); 
-                }, 
-                function(err) {
-                    console.log('error: ' + err);
+                    console.log('Status: writeDescriptor ok.');
+                },
+                function(errorCode) {
+                    navigator.notification.alert('Error: writeDescriptor: ' + errorCode, function() {});
+                    console.log('Error: writeDescriptor: ' + errorCode + '.');
                 });
-        }
-    },
-    connect: function(address) {
-        evothings.ble.stopScan();
-        console.log('Connecting...');
-        evothings.ble.connect(
-            address,
-            function(connectInfo)
-            {
-                if (connectInfo.state == 2) // Connected
-                {
-                    console.log('Connected');
-                   
-                    app.deviceHandle = connectInfo.deviceHandle;
-                    app.getServices(connectInfo.deviceHandle);
-                    connectBtn.hide();
-                    disconnectBtn.show();
 
-                }
-               
-            },
-            function(errorCode)
-            {
-                console.log('connect error: ' + errorCode);
-            });
-    },
-    startReading: function(deviceHandle) {
-       // $('body').append('connected');
-         app.write(
-            'writeDescriptor',
-            deviceHandle,
-            app.descriptorNotification,
-            new Uint8Array([1,0]));
-
-        evothings.ble.enableNotification(
-            deviceHandle,
-            app.characteristicRead,
-            function(data)
-            {
-                $('body').append(data + '<br>');
-            },
-            function(errorCode)
-            {
-                console.log('enableNotification error: ' + errorCode);
+            device.enableNotification(app.RBL_CHAR_TX_UUID, app.receivedData, function(errorCode) {
+                navigator.notification.alert('BLE enableNotification error: ' + errorCode, function() {});
+                console.log('BLE enableNotification error: ' + errorCode); 
             });
 
-    },
-    getServices: function(deviceHandle) {
-        console.log('Reading services...');
-
-        evothings.ble.readAllServiceData(deviceHandle, function(services)
-        {
-            // Find handles for characteristics and descriptor needed.
-            for (var si in services)
-            {
-                var service = services[si];
-
-                for (var ci in service.characteristics)
-                {
-                    var characteristic = service.characteristics[ci];
-
-                    if (characteristic.uuid == '713d0002-503e-4c75-ba94-3148f18d941e')
-                    {
-                        app.characteristicRead = characteristic.handle;
-                    }
-                    else if (characteristic.uuid == '713d0003-503e-4c75-ba94-3148f18d941e')
-                    {
-                        app.characteristicWrite = characteristic.handle;
-                    }
-
-                    for (var di in characteristic.descriptors)
-                    {
-                        var descriptor = characteristic.descriptors[di];
-
-                        if (characteristic.uuid == '713d0002-503e-4c75-ba94-3148f18d941e' &&
-                            descriptor.uuid == '00002902-0000-1000-8000-00805f9b34fb')
-                        {
-                            app.descriptorNotification = descriptor.handle;
-                        }
-                    }
-                }
-            }
-
-            if (app.characteristicRead && app.characteristicWrite && app.descriptorNotification)
-            {
-                console.log('RX/TX services found.');
-                app.startReading(deviceHandle);
-            }
-            else
-            {
-                console.log('ERROR: RX/TX services not found!');
-            }
+            $.mobile.loading('hide');
+            $.mobile.changePage('#control');
+            connectBtn.hide();
+            disconnectBtn.show();
         },
-        function(errorCode)
-        {
-            console.log('readAllServiceData error: ' + errorCode);
+        function(errorCode) {
+
+            app.disconnect();
+            navigator.notification.alert('Error reading services: ' + errorCode, function() {});
+            console.log('Error reading services '  + errorCode);
         });
+    }, function(errorCode) {
+        app.disconnect();
+        console.log('Error ' + errorCode);
+    });
+};
+
+// Send Data
+app.sendData = function(data) {
+    if (app.connected) {
+        data = new Uint8Array(data);
+        app.device.writeCharacteristic(app.RBL_CHAR_RX_UUID, data, function() {
+            console.log('Succeded to send message.');
+        }, function(errorCode) {
+            navigator.notification.alert('Failed to send data: ' + errorCode, function() {});
+            console.log('Failed to send data with error: ' + errorCode);
+            app.disconnect();
+        });
+    }
+    else {
+        console.log('Error - No device connected');
     }
 };
 
-app.initialize();
+// Handle received Data
+app.receivedData = function(data) {
+    var data = new Uint8Array(data);
+
+    console.log('Data received: ' + data);
+}
+
+// Disconnect BLE
+app.disconnect = function() {
+
+    app.connected = false;
+    app.device = null;
+
+    easyble.stopScan();
+    easyble.closeConnectedDevices();
+    console.log('Disconnected');
+
+    connectBtn.show();
+    disconnectBtn.hide();
+    deviceList.empty();
+};
+
+
+// Rapiro command
+app.command = function(cmd) {
+   app.sendData([0x23, 0x4d, 0x30 + cmd]);
+};

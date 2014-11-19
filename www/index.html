@@ -7,12 +7,12 @@
         <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile.theme-1.4.2.css">
     </head>
     <body>
-        <div data-role="page">
+        <div data-role="page" id="control">
      
             <div data-role="header">
-                  <a id="connectButton" href="#" onclick="app.appConnect()">Connect</a>
-                  <a id="disconnectButton" href="#" onclick="app.appDisconnect()" style="display:none">Disconnect</a>
-                <h1>Rapiro Controller</h1>
+                  <a id="connectButton" href="#devicesList" onclick="app.startScan()">Connect</a>
+                  <a id="disconnectButton" href="#" onclick="app.disconnect()" style="display:none">Disconnect</a>
+                <h1>Rapiro</h1>
             </div><!-- /header -->
      
             <div data-role="content">
@@ -33,11 +33,22 @@
      
         </div><!-- /page -->
 
+        <div data-role="page" id="devicesList">
+            <div data-role="header">
+                <a href="#control">Cancel</a>
+                <h1>Select Device</h1>
+            </div>
+            <div data-role="content">
+                <ul data-role="listview" id="bleList">
+                </ul>
+            </div>
+        </div>
 
         <script type="text/javascript" src="app/components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="app/components/jquery-mobile-bower/js/jquery.mobile-1.4.2.min.js"></script>
 
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/easy-ble.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

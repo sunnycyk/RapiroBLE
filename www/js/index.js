@@ -67,9 +67,9 @@ app.connect = function(address) {
     var device = app.devices[address];
     // stop scan;
     easyble.stopScan();
-    $.mobile.loading('show', {});
+ 
     device.connect(function(device) { // success
-            
+        $.mobile.loading('show', {});    
         device.readServices([app.RBL_SERVICE_UUID], function(device) {
             app.connected = true;
             app.device = device;
@@ -99,7 +99,7 @@ app.connect = function(address) {
             disconnectBtn.show();
         },
         function(errorCode) {
-
+            $.mobile.loading('hide'); 
             app.disconnect();
             navigator.notification.alert('Error reading services: ' + errorCode, function() {});
             console.log('Error reading services '  + errorCode);

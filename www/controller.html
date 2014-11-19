@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="app/components/jquery-mobile-bower/css/jquery.mobile.theme-1.4.2.css">
     </head>
     <body>
-        <div data-role="page" id="control"  style="background-color:#a1b9ed;">
+        <div data-role="page" id="control">
      
             <div data-role="header">
                   <a id="connectButton" href="#devicesList" onclick="app.startScan()">Connect</a>
@@ -15,31 +15,8 @@
                 <h1>Rapiro</h1>
             </div><!-- /header -->
      
-            <div data-role="content">
-                <div class="ui-grid-b" style="">
-                  <div class="ui-block-a" ></div>
-                  <div class="ui-block-b" > <button onclick="app.command(1)" class="ui-btn ui-shadow ui-corner-all ui-icon-arrow-u ui-btn-icon-notext" style="font-size:25px;margin:5px auto;"></button></div>
-                  <div class="ui-block-c" ></div>
-                 </div>
-                 <div class="ui-grid-b" style="">
-                     <div class="ui-block-a" > <button onclick="app.command(3)" class="ui-btn ui-shadow ui-corner-all ui-icon-arrow-l ui-btn-icon-notext" style="font-size:25px;margin:5px 0 5px auto;"></button></div>
-                     <div class="ui-block-b" ><button onclick="app.command(0)" class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext" style="font-size:25px;margin:5px auto;"></button> </div>
-                     <div class="ui-block-c" ><button onclick="app.command(4)" class="ui-btn ui-shadow ui-corner-all ui-icon-arrow-r ui-btn-icon-notext" style="font-size:25px;margin:5px auto 5px 0;"></button></div>
-                 </div>
-                 <div class="ui-grid-b" style="">
-                      <div class="ui-block-a" ></div>
-                      <div class="ui-block-b" >  <button onclick="app.command(2)" class="ui-btn ui-shadow ui-corner-all ui-icon-arrow-d ui-btn-icon-notext" style="font-size:25px;margin:5px auto;"></button></div>
-                      <div class="ui-block-c" ></div>
-                 </div>
-                 <button onclick="app.command(5)" class="ui-btn">Give Me a Hug</button>
-                 <button onclick="app.command(6)" class="ui-btn">Wave Right Hand</button>
-                 <button onclick="app.command(7)" class="ui-btn">Move Both Arms</button>
-                 <button onclick="app.command(8)" class="ui-btn">Wave Left Hands</button>
-                 <button onclick="app.command(9)" class="ui-btn">Catch Action</button>
-                  
-                 
-                  
-            <!--    <ul data-role="listview">
+            <div data-role="content">       
+                 <ul data-role="listview">
                     <li><a href="#" onclick="app.command(0)">Initial Position</a></li>
                     <li><a href="#" onclick="app.command(1)">Move Forward</a></li>
                     <li><a href="#" onclick="app.command(2)">Move Backward</a></li>
@@ -50,7 +27,7 @@
                     <li><a href="#" onclick="app.command(7)">Move Both Arms</a></li>
                     <li><a href="#" onclick="app.command(8)">Wave Left Hand</a></li>
                     <li><a href="#" onclick="app.command(9)">Catch Action</a></li>
-                </ul> -->
+                </ul> 
             </div><!-- /content -->
      
      
